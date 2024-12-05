@@ -22,8 +22,6 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::get('dashboard', [HomeController::class, 'home'])->name('dashboard');
 	Route::resources([
 		'users' => UserController::class,
-		
-
 	]);
 	Route::resource('asset', AssetController::class);
 	Route::resource('risk', RiskController::class);
