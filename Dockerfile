@@ -1,36 +1,25 @@
-# 1. Gunakan base image PHP resmi
-FROM php:8.2-cli
+FROM php:8.2-fpm
 
-# 2. Install library sistem yang dibutuhkan Laravel
+# Install dependensi
 RUN apt-get update && apt-get install -y \
-    libpng-dev \
-    libonig-dev \
-    libxml2-dev \
-    zip \
-    unzip \
-    git \
-    curl
+    libpng-dev libonig-dev libxml2-dev zip unzip git curl
 
-# 3. Install ekstensi PHP untuk database & lainnya
+# Install ekstensi PHP
 RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd
 
-# 4. Install Composer (Manajer Paket PHP)
+# Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# 5. Set folder kerja di dalam container
 WORKDIR /var/www
 
-# 6. Salin semua file project ke dalam container
+# Copy file project
 COPY . .
 
-# 7. Install dependensi Laravel via Composer
+# Install dependensi Laravel
 RUN composer install --optimize-autoloader --no-dev
 
-# 8. Set permission (PENTING: agar Laravel bisa tulis log/cache)
+# Permission folder storage
 RUN chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache
 
-# 9. Expose port 8000
-EXPOSE 8000
-
-# 10. Perintah default saat container jalan
-CMD php artisan serve --host=0.0.0.0 --port=8000
+EXPOSE 9000
+CMD ["php-fpm"]
