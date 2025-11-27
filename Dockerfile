@@ -21,5 +21,11 @@ RUN composer install --optimize-autoloader --no-dev
 # Permission folder storage
 RUN chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache
 
-EXPOSE 9000
-CMD ["php-fpm"]
+# (opsional) generate APP_KEY kalau belum
+# RUN php artisan key:generate
+
+# Laravel akan listen di port 8000
+EXPOSE 8000
+
+# Jalankan Laravel dev server
+CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=8000"]
